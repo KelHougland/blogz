@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if blog_id|int != 0 %}
+
+        {% for blog in blogs %}
+
+            {% if blog.blog_id==blog_id %}
+    
+                <a href="/blog?blog_id={{blog.blog_id}}"><h3>{{blog.title}}</h3></a>
+                <p>{{blog.blog}}</p>
+                <p>By {{blog.user_id.email}}</p>
+
+            {% endif %}
+    
+        {% endfor %}
+
+    {% else %}
+
+        {% for blog in blogs %}
+
+            <a href="/blog?blog_id={{blog.blog_id}}"><h3>{{blog.title}}</h3></a>
+            <p>{{blog.blog}}</p>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+
+{% endblock %}

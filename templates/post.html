@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h2>Share Your Thoughts!</h2>
+<form method = "POST">
+    <label>
+        <input type = 'text' name = 'title' value = '{{title}}'/>
+    </label>
+    <br>
+    <label>
+        <textarea name = 'blogentry'>{{entry}}</textarea>
+    </label>
+    <label>
+        <input type = 'submit' value = 'Post it!'/>
+    </label>
+</form>
+
+
+
+
+{% endblock %}
