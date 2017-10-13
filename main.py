@@ -93,7 +93,7 @@ def register():
         user = User(email=email, password=password)
         db.session.add(user)
         db.session.commit()
-        session['user'] = user.email
+        session['email'] = user.email
         return redirect("/")
     else:
         return render_template('signup.html')
@@ -138,8 +138,7 @@ def addpost():
             error = 1
         if error == 1:
             return render_template('post.html',title=title,entry=entry)
-        email = session['email']
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=session['email']).first()
         blog = Blog(title,entry,user)
         db.session.add(blog)
         db.session.commit()
