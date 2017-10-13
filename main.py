@@ -50,7 +50,7 @@ def invalid_email(address):
 def logout():
     del session['email']
     flash('You have logged out!')
-    return redirect('/login')
+    return redirect('/blog')
 
 
 @app.route('/login', methods=['POST','GET'])
@@ -72,7 +72,7 @@ def login():
 
 
 @app.route("/signup", methods=['GET', 'POST'])
-def register():
+def signup():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -111,10 +111,15 @@ def register():
 @app.route('/blog', methods=['POST', 'GET'])
 def showblogs():
     blog_id=request.args.get('blog_id')
+    user_id=request.args.get('user_id')
     if blog_id != None:
         blog_id=int(blog_id)
+    if user_id != None:
+        blogs = Blog.query.filter_by(user_id=user_id).order_by(Blog.blog_id.desc()).all()
+        email = User.query.filter_by(user_id=user_id).first().email
+        return render_template('singleUser.html',blogs=blogs,email=email)
     blogs=Blog.query.order_by(Blog.blog_id.desc()).all()
-    return render_template('blog.html',blogs=blogs,blog_id=blog_id)
+    return render_template('blog.html',blogs=blogs,blog_id=blog_id,user_id=user_id)
 
 
 
@@ -138,7 +143,7 @@ def addpost():
             error = 1
         if error == 1:
             return render_template('post.html',title=title,entry=entry)
-        user = User.query.filter_by(email=session['email']).first()
+        user = User.query.filter_by(email=session['email']).first().user_id
         blog = Blog(title,entry,user)
         db.session.add(blog)
         db.session.commit()
@@ -150,9 +155,15 @@ def addpost():
 
 @app.route('/', methods = ['POST', 'GET'])
 def index():
-    return redirect('/blog')
+    users = User.query.all()
+    return render_template('index.html',users=users)
 
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login','signup','showblogs','index']
+    if (request.endpoint not in allowed_routes) and ('email' not in session):
+        return redirect('/login')
 
 
 app.secret_key = 'Wyhguwd0UBwnEK0w'
