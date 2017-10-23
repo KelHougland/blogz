@@ -14,6 +14,7 @@ class Blog(db.Model):
     title = db.Column(db.String(120))
     blog = db.Column(db.Text(65000))
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    user = db.relationship('User')
 
     def __init__(self,title,blog,user):
         self.title=title
@@ -24,6 +25,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
+    # blogs = db.relationship('Blog',backref='user_id')
        
     def __init__(self, user_name, password):
         self.user_name = user_name
@@ -94,13 +96,6 @@ def signup():
         return redirect("/")
     else:
         return render_template('signup.html')
-
-
-
-
-
-
-
 
 
 
